@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import universalHashing.interfaces.IHash;
 import universalHashing.universalManager.HashManager;
 
 public abstract class IHasher {
@@ -14,8 +13,6 @@ public abstract class IHasher {
 
     protected ArrayList<Integer> keys;
 
-    protected ArrayList<IHash> hashers;
-
     protected HashManager manager;
 
     public IHasher(int totalSize) {
@@ -23,7 +20,6 @@ public abstract class IHasher {
         this.tableSize = totalSize;
         keys = new ArrayList<Integer>();
         manager = HashManager.getInstance();
-        hashers = new ArrayList<IHash>();
     }
 
     public void readFile(String fileName) throws IOException {

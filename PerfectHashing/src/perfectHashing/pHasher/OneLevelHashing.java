@@ -1,16 +1,22 @@
 package perfectHashing.pHasher;
 
+import java.util.ArrayList;
+
 import perfectHashing.interfaces.IHasher;
 import perfectHashing.util.Pair;
+import universalHashing.interfaces.IHash;
 
 public class OneLevelHashing extends IHasher {
 
     private Pair[] hashMap;
 
+    private ArrayList<IHash> hashers;
+
     public OneLevelHashing(int totalSize) {
         super(totalSize);
         // TODO Auto-generated constructor stub
         hashMap = new Pair[totalSize * totalSize];
+        hashers = new ArrayList<IHash>();
     }
 
     @Override
@@ -23,8 +29,8 @@ public class OneLevelHashing extends IHasher {
             added = false;
             for (int j = 0; j < hashers.size(); j++) {
                 int index = hashers.get(j).hash(keys.get(i));
-                if (!hashMap[index].isOccupied()) {
-                    hashMap[index].setValue(keys.get(i));
+                if (hashMap[index] == null) {
+                    hashMap[index] = new Pair(keys.get(i));
                     added = true;
                     break;
                 }
@@ -44,7 +50,7 @@ public class OneLevelHashing extends IHasher {
         // TODO Auto-generated method stub
         for (int i = 0; i < hashers.size(); i++) {
             int index = hashers.get(i).hash(key);
-            if (hashMap[index].isOccupied()) {
+            if (hashMap[index] != null) {
                 if (hashMap[index].getValue() == key)
                     return true;
             }

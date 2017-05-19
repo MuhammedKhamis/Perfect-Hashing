@@ -25,7 +25,7 @@ public class Element {
         Pair[] tmp = new Pair[size * size];
         hashFunction = manager.getHashFunction(size * size);
         for (int i = 0; i < hashMap.length; i++) {
-            if (hashMap[i].isOccupied()) {
+            if (hashMap[i] != null) {
                 int index = hashFunction.hash(hashMap[i].getValue());
                 tmp[index] = new Pair(hashMap[i].getValue());
             }
@@ -35,7 +35,7 @@ public class Element {
 
     public boolean search(int key) {
         int index = hashFunction.hash(key);
-        if (hashMap[index].isOccupied()) {
+        if (hashMap[index] != null) {
             if (hashMap[index].getValue() == key) {
                 return true;
             }
