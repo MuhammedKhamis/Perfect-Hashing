@@ -14,8 +14,6 @@ public abstract class IHasher {
 
     protected ArrayList<Integer> keys;
 
-    protected int[] hashMap;
-
     protected ArrayList<IHash> hashers;
 
     protected HashManager manager;
