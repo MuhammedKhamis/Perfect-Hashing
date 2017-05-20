@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         // TODO Auto-generated method stub
 
-        String filePath = "C:\\Users\\Muhammed\\Desktop\\testCases_lab4\\1.txt";
+        String filePath = "C:\\Users\\Muhammed\\git\\Perfect-Hashing\\PerfectHashing\\tests\\1.txt";
         ArrayList<Integer> keys = fileReader.Reader.readFile(filePath);
         IHasher oneLevel = new OneLevelHashing(keys.size());
         IHasher twoLevel = new TwoLevelHashing(keys.size());
