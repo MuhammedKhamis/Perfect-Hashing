@@ -1,46 +1,37 @@
 package perfectHashing.util;
 
-import universalHashing.interfaces.IHash;
-import universalHashing.universalManager.HashManager;
+import java.util.ArrayList;
+
+import perfectHashing.pHasher.OneLevelHashing;
 
 public class Element {
 
-    private IHash hashFunction;
+    private OneLevelHashing hashMap;
 
-    private Pair[] hashMap;
-
-    private int size;
-
-    private HashManager manager;
+    private ArrayList<Integer> keys;
 
     public Element() {
         // TODO Auto-generated constructor stub
-        size = 0;
-        hashMap = new Pair[size];
-        manager = HashManager.getInstance();
+        hashMap = new OneLevelHashing(1);
+        keys = new ArrayList<>();
     }
 
-    public void insert(int key) {
-        size++;
-        Pair[] tmp = new Pair[size * size];
-        hashFunction = manager.getHashFunction(size * size);
-        for (int i = 0; i < hashMap.length; i++) {
-            if (hashMap[i] != null) {
-                int index = hashFunction.hash(hashMap[i].getValue());
-                tmp[index] = new Pair(hashMap[i].getValue());
-            }
+    public int insert(int key) {
+        if (search(key)) {
+            return 0;
         }
-        hashMap = tmp;
+        keys.add(key);
+        hashMap = new OneLevelHashing(keys.size());
+        int collsions = 0;
+        for (int i = 0; i < keys.size(); i++) {
+            collsions += hashMap.insert(keys.get(i));
+        }
+        return collsions;
+
     }
 
     public boolean search(int key) {
-        int index = hashFunction.hash(key);
-        if (hashMap[index] != null) {
-            if (hashMap[index].getValue() == key) {
-                return true;
-            }
-        }
-        return false;
+        return hashMap.search(key);
     }
 
 }

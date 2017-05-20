@@ -13,7 +13,7 @@ public class Reader {
         ArrayList<Integer> keys = new ArrayList<>();
         FileReader file = new FileReader(fileName);
         BufferedReader reader = new BufferedReader(file);
-        while (reader.readLine() != null) {
+        while (reader.ready()) {
             String line = reader.readLine();
             line = line.trim();
             String[] numbers = line.split(",");

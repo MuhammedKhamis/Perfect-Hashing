@@ -17,30 +17,31 @@ public class OneLevelHashing extends IHasher {
         // TODO Auto-generated constructor stub
         hashMap = new Pair[totalSize * totalSize];
         hashers = new ArrayList<IHash>();
+        hashers.add(manager.getHashFunction(tableSize * tableSize));
     }
 
     @Override
-    public int insert(ArrayList<Integer> keys) {
+    public int insert(int key) {
         // TODO Auto-generated method stub
         int collsions = 0;
-        hashers.add(manager.getHashFunction(tableSize));
         boolean added = false;
-        for (int i = 0; i < keys.size(); i++) {
-            added = false;
-            for (int j = 0; j < hashers.size(); j++) {
-                int index = hashers.get(j).hash(keys.get(i));
-                if (hashMap[index] == null) {
-                    hashMap[index] = new Pair(keys.get(i));
-                    added = true;
-                    break;
-                }
-            }
-            if (!added) {
-                collsions++;
-                hashers.add(manager.getHashFunction(tableSize));
-                i--;
+        for (int j = 0; j < hashers.size(); j++) {
+            int index = hashers.get(j).hash(key);
+            if (hashMap[index] == null) {
+                hashMap[index] = new Pair(key);
+                added = true;
+                break;
+            } else if (hashMap[index].getValue() == key) {
+                added = true;
+                break;
             }
         }
+        if (!added) {
+            collsions++;
+            hashers.add(manager.getHashFunction(tableSize * tableSize));
+            collsions += insert(key);
+        }
+
         return collsions;
 
     }
@@ -48,6 +49,9 @@ public class OneLevelHashing extends IHasher {
     @Override
     public boolean search(int key) {
         // TODO Auto-generated method stub
+        if (hashers.size() == 0) {
+            return false;
+        }
         for (int i = 0; i < hashers.size(); i++) {
             int index = hashers.get(i).hash(key);
             if (hashMap[index] != null) {
