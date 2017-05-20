@@ -4,9 +4,9 @@ import universalHashing.interfaces.IHash;
 
 public class HashFunction implements IHash {
 
-    private int a, b, p, tableSize;
+    private long a, b, p, tableSize;
 
-    public HashFunction(int a, int b, int p, int tableSize) {
+    public HashFunction(long a, long b, long p, long tableSize) {
         // TODO Auto-generated constructor stub
         this.a = a;
         this.b = b;
@@ -17,7 +17,7 @@ public class HashFunction implements IHash {
     @Override
     public int hash(int key) {
         // TODO Auto-generated method stub
-        int value = ((a * key + b) % p) % tableSize;
+        int value = (int) (((a * key + b) % p) % tableSize);
         return value;
     }
 

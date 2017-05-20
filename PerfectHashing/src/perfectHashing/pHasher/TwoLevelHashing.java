@@ -3,29 +3,24 @@ package perfectHashing.pHasher;
 import java.util.ArrayList;
 
 import perfectHashing.interfaces.IHasher;
-import perfectHashing.util.Element;
 import universalHashing.interfaces.IHash;
 
 public class TwoLevelHashing extends IHasher {
 
-    private Element[] hashMap;
+    private OneLevelHashing[] hashMap;
 
     private IHash hashFunction;
+
+    private static final int factor = 7;
+
+    private int[] tester;
 
     public TwoLevelHashing(int totalSize) {
         super(totalSize);
         // TODO Auto-generated constructor stub
-        hashMap = new Element[totalSize];
+        hashMap = new OneLevelHashing[totalSize];
         hashFunction = manager.getHashFunction(tableSize);
 
-    }
-
-    private boolean insert(int key) {
-        int index = hashFunction.hash(key);
-        if (hashMap[index] == null) {
-            hashMap[index] = new Element();
-        }
-        return hashMap[index].insert(key);
     }
 
     @Override
@@ -38,16 +33,41 @@ public class TwoLevelHashing extends IHasher {
         return false;
     }
 
+    private boolean chooseOfHash(ArrayList<Integer> keys) {
+        hashFunction = manager.getHashFunction(tableSize);
+        tester = new int[tableSize];
+        for (int i = 0; i < tableSize; i++) {
+            int index = hashFunction.hash(keys.get(i));
+            tester[index]++;
+        }
+        int size = 0;
+        for (int i = 0; i < tableSize; i++) {
+            size += (tester[i] * tester[i]);
+            if (size > tableSize * factor) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public int insert(ArrayList<Integer> keys) {
         // TODO Auto-generated method stub
-        int collsion = 0;
-        for (int i = 0; i < keys.size(); i++) {
-            if (insert(keys.get(i))) {
-                collsion++;
-            }
+        while (chooseOfHash(keys))
+            ;
+        ArrayList<ArrayList<Integer>> tmp = new ArrayList<>();
+        for (int i = 0; i < tableSize; i++) {
+            tmp.add(new ArrayList<>());
         }
-        return collsion;
+        for (int i = 0; i < keys.size(); i++) {
+            int index = hashFunction.hash(keys.get(i));
+            tmp.get(index).add(keys.get(i));
+        }
+        for (int i = 0; i < tableSize; i++) {
+            hashMap[i] = new OneLevelHashing(tester[i]);
+            hashMap[i].insert(tmp.get(i));
+        }
+        return 0;
     }
 
 }
