@@ -1,0 +1,97 @@
+package perfect.linear;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import perfect.quadratic.QuadraticSolver;
+import perfect.solver.ISolver;
+import universal.hashing.IHashFunction;
+import universal.hashing.UniversalHashingFamily;
+import util.SecondaryHashCell;
+
+public class LinearSolver implements ISolver {
+	private SecondaryHashCell[] primaryHashTable;
+
+	private IHashFunction primaryHashFunction;
+	private UniversalHashingFamily universal;
+	private int[] secondarySize;
+
+	private final int allowedCoeff = 4;
+	private final int largestPrime = Integer.MAX_VALUE;
+
+	public LinearSolver() {
+		universal = new UniversalHashingFamily();
+	}
+
+	@Override
+	public void build(int[] keySet) {
+		secondarySize = new int[keySet.length];
+
+		int tableSize = keySet.length;
+		primaryHashTable = new SecondaryHashCell[tableSize];
+		for(int i=0;i<tableSize;i++)primaryHashTable[i] = new SecondaryHashCell();
+
+		do {
+			primaryHashFunction = universal.getRandomHashFunction(tableSize, largestPrime);
+		} while (checkLinearSpace(primaryHashFunction, keySet));
+
+		buildSecondaryHashTable(keySet);
+	}
+
+	@Override
+	public boolean search(int key) {
+		int ind1 = primaryHashFunction.computeHashValue(key);
+		int ind2 = primaryHashTable[ind1].getHashFunction().computeHashValue(key);
+		return (primaryHashTable[ind1].getSecondaryTable()[ind2] == key);
+	}
+
+	private boolean checkLinearSpace(IHashFunction primaryHashFunction, int[] keySet) {
+		Arrays.fill(this.secondarySize, 0);
+		for (int key : keySet) {
+			int ind = primaryHashFunction.computeHashValue(key);
+			//System.out.println(key + " ==> " + ind);
+			secondarySize[ind]++;
+		}
+
+		int totalSize = 0;
+		for (int sz : secondarySize) {
+			totalSize += (sz * sz);
+			if (totalSize > keySet.length * allowedCoeff)
+				return false;
+		}
+		return true;
+	}
+
+	private void buildSecondaryHashTable(int[] keySet) {
+		List<List<Integer>> elements = new ArrayList<List<Integer>>();
+
+		for (int i = 0; i < keySet.length; i++) {
+			if (secondarySize[i] == 0) {
+				elements.add(null);
+			} else {
+				elements.add(new ArrayList<Integer>());
+			}
+
+		}
+
+		for (int key : keySet) {
+			int ind = primaryHashFunction.computeHashValue(key);
+			elements.get(ind).add(key);
+		}
+
+		QuadraticSolver quadraticSolver = new QuadraticSolver();
+		for (int i = 0; i < keySet.length; i++) {
+			if (elements.get(i) != null) {
+				int[] elementsArray = new int[elements.get(i).size()];
+				for (int j = 0; j < elements.get(i).size(); j++)
+					elementsArray[j] = elements.get(i).get(j);
+
+				quadraticSolver.build(elementsArray);
+				//System.out.println("success " + i);
+				primaryHashTable[i].setHashFunction(quadraticSolver.getHashFunction());
+				primaryHashTable[i].setSecondaryTable(quadraticSolver.getHashTable());
+			}
+		}
+	}
+}
