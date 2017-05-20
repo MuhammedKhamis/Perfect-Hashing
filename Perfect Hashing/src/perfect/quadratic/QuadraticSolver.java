@@ -11,7 +11,8 @@ public class QuadraticSolver implements ISolver {
 	private IHashFunction hashFunction;
 	private UniversalHashingFamily universal;
 	private final int largestPrime = Integer.MAX_VALUE;
-
+	private final int numberOfBitsForLargestNumber = 32;
+	
 	public QuadraticSolver() {
 		universal = new UniversalHashingFamily();
 	}
@@ -22,7 +23,8 @@ public class QuadraticSolver implements ISolver {
 		hashTable = new int[tableSize];
 
 		do {
-			hashFunction = universal.getRandomHashFunction(tableSize, largestPrime);
+			//hashFunction = universal.getRandomHashFunction(tableSize, largestPrime);
+			hashFunction = universal.getRandomHashFunction2(tableSize, numberOfBitsForLargestNumber);
 		} while (checkCollision(hashFunction, keySet));
 	}
 
@@ -33,13 +35,13 @@ public class QuadraticSolver implements ISolver {
 	}
 
 	private boolean checkCollision(IHashFunction hashFun, int[] keySet) {
-		// assume zero is not in allowed value (initial value only)
-		Arrays.fill(this.hashTable, -1);
+		// assume -2 is not in allowed value (initial value only)
+		Arrays.fill(this.hashTable, -2);
 
 		for (int key : keySet) {
 			int ind = hashFun.computeHashValue(key);
 			//to handle dublicate keys
-			if (hashTable[ind] != -1 && !search(key))
+			if (hashTable[ind] != -2 && !search(key))
 				return true;
 			hashTable[ind] = key;
 		}

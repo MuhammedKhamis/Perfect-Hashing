@@ -16,9 +16,11 @@ public class LinearSolver implements ISolver {
 	private IHashFunction primaryHashFunction;
 	private UniversalHashingFamily universal;
 	private int[] secondarySize;
-
-	private final int allowedCoeff = 4;
+	
+	// in test 3 we need it to be > 100
+	private final int allowedCoeff = 10;
 	private final int largestPrime = Integer.MAX_VALUE;
+	private final int numberOfBitsForLargestNumber = 32;
 
 	public LinearSolver() {
 		universal = new UniversalHashingFamily();
@@ -33,8 +35,9 @@ public class LinearSolver implements ISolver {
 		for(int i=0;i<tableSize;i++)primaryHashTable[i] = new SecondaryHashCell();
 
 		do {
-			primaryHashFunction = universal.getRandomHashFunction(tableSize, largestPrime);
-		} while (checkLinearSpace(primaryHashFunction, keySet));
+			//primaryHashFunction = universal.getRandomHashFunction(tableSize, largestPrime);
+			primaryHashFunction = universal.getRandomHashFunction2(tableSize, numberOfBitsForLargestNumber);
+		} while (!checkLinearSpace(primaryHashFunction, keySet));
 
 		buildSecondaryHashTable(keySet);
 	}
@@ -50,16 +53,19 @@ public class LinearSolver implements ISolver {
 		Arrays.fill(this.secondarySize, 0);
 		for (int key : keySet) {
 			int ind = primaryHashFunction.computeHashValue(key);
-			//System.out.println(key + " ==> " + ind);
+			System.out.println(key + " ==> " + ind);
 			secondarySize[ind]++;
 		}
-
+		// if we don't care very much about memory but note that prob(space > 4*n) < 1/2
+		//		return true;
+		
 		int totalSize = 0;
 		for (int sz : secondarySize) {
 			totalSize += (sz * sz);
-			if (totalSize > keySet.length * allowedCoeff)
-				return false;
+//			if (totalSize > keySet.length * allowedCoeff)
+//				return false;
 		}
+		System.out.println("total memory = " + totalSize);
 		return true;
 	}
 

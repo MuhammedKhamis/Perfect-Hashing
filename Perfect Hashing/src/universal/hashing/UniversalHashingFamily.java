@@ -20,4 +20,9 @@ public class UniversalHashingFamily {
 		IHashFunction hashFunction = new HashFuncionImpl(a, b, largestPrime, hashTableSize);
 		return hashFunction;
 	}
+	
+	public IHashFunction getRandomHashFunction2(int hashTableSize, int numberOfBitsForLargestNumber) {
+		IHashFunction hashFunction = new HashFunctionMatrixMethod(numberOfBitsForLargestNumber,hashTableSize);
+		return hashFunction;
+	}
 }
