@@ -20,7 +20,7 @@ public class OneLevelHashing extends IHasher {
     }
 
     @Override
-    public int insert() {
+    public int insert(ArrayList<Integer> keys) {
         // TODO Auto-generated method stub
         int collsions = 0;
         hashers.add(manager.getHashFunction(tableSize));
