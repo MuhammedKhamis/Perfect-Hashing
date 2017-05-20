@@ -45,6 +45,7 @@ public class LinearSolver implements ISolver {
 	@Override
 	public boolean search(int key) {
 		int ind1 = primaryHashFunction.computeHashValue(key);
+		if(primaryHashTable[ind1]== null)return false;
 		int ind2 = primaryHashTable[ind1].getHashFunction().computeHashValue(key);
 		return (primaryHashTable[ind1].getSecondaryTable()[ind2] == key);
 	}
@@ -53,11 +54,12 @@ public class LinearSolver implements ISolver {
 		Arrays.fill(this.secondarySize, 0);
 		for (int key : keySet) {
 			int ind = primaryHashFunction.computeHashValue(key);
-			System.out.println(key + " ==> " + ind);
+			//System.out.println(key + " ==> " + ind);
 			secondarySize[ind]++;
 		}
 		// if we don't care very much about memory but note that prob(space > 4*n) < 1/2
 		//		return true;
+		
 		
 		int totalSize = 0;
 		for (int sz : secondarySize) {
@@ -97,6 +99,9 @@ public class LinearSolver implements ISolver {
 				//System.out.println("success " + i);
 				primaryHashTable[i].setHashFunction(quadraticSolver.getHashFunction());
 				primaryHashTable[i].setSecondaryTable(quadraticSolver.getHashTable());
+			}
+			else{
+				primaryHashTable[i] = null;
 			}
 		}
 	}
