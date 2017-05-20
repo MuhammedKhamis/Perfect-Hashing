@@ -16,17 +16,13 @@ public class Element {
         keys = new ArrayList<>();
     }
 
-    public int insert(int key) {
+    public boolean insert(int key) {
         if (search(key)) {
-            return 0;
+            return false;
         }
         keys.add(key);
         hashMap = new OneLevelHashing(keys.size());
-        int collsions = 0;
-        for (int i = 0; i < keys.size(); i++) {
-            collsions += hashMap.insert(keys.get(i));
-        }
-        return collsions;
+        return hashMap.insert(keys) > 0;
 
     }
 

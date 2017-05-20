@@ -1,5 +1,7 @@
 package perfectHashing.pHasher;
 
+import java.util.ArrayList;
+
 import perfectHashing.interfaces.IHasher;
 import perfectHashing.util.Element;
 import universalHashing.interfaces.IHash;
@@ -18,16 +20,12 @@ public class TwoLevelHashing extends IHasher {
 
     }
 
-    @Override
-    public int insert(int key) {
-        // TODO Auto-generated method stub
-        int collsions = 0;
+    private boolean insert(int key) {
         int index = hashFunction.hash(key);
         if (hashMap[index] == null) {
             hashMap[index] = new Element();
         }
-        collsions = hashMap[index].insert(key);
-        return collsions;
+        return hashMap[index].insert(key);
     }
 
     @Override
@@ -38,6 +36,18 @@ public class TwoLevelHashing extends IHasher {
             return hashMap[index].search(key);
         }
         return false;
+    }
+
+    @Override
+    public int insert(ArrayList<Integer> keys) {
+        // TODO Auto-generated method stub
+        int collsion = 0;
+        for (int i = 0; i < keys.size(); i++) {
+            if (insert(keys.get(i))) {
+                collsion++;
+            }
+        }
+        return collsion;
     }
 
 }

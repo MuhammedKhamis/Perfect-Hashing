@@ -10,57 +10,59 @@ public class OneLevelHashing extends IHasher {
 
     private Pair[] hashMap;
 
-    private ArrayList<IHash> hashers;
+    private IHash hashFunction;
 
     public OneLevelHashing(int totalSize) {
         super(totalSize);
         // TODO Auto-generated constructor stub
         hashMap = new Pair[totalSize * totalSize];
-        hashers = new ArrayList<IHash>();
-        hashers.add(manager.getHashFunction(tableSize * tableSize));
+        hashFunction = manager.getHashFunction(tableSize * tableSize);
     }
 
-    @Override
-    public int insert(int key) {
+    public boolean insert(int key) {
         // TODO Auto-generated method stub
-        int collsions = 0;
-        boolean added = false;
-        for (int j = 0; j < hashers.size(); j++) {
-            int index = hashers.get(j).hash(key);
-            if (hashMap[index] == null) {
-                hashMap[index] = new Pair(key);
-                added = true;
-                break;
-            } else if (hashMap[index].getValue() == key) {
-                added = true;
-                break;
-            }
+        if (search(key)) {
+            return true;
         }
-        if (!added) {
-            collsions++;
-            hashers.add(manager.getHashFunction(tableSize * tableSize));
-            collsions += insert(key);
+        int index = hashFunction.hash(key);
+        if (hashMap[index] == null) {
+            hashMap[index] = new Pair(key);
+        } else {
+            return false;
         }
-
-        return collsions;
+        return true;
 
     }
 
     @Override
     public boolean search(int key) {
         // TODO Auto-generated method stub
-        if (hashers.size() == 0) {
-            return false;
-        }
-        for (int i = 0; i < hashers.size(); i++) {
-            int index = hashers.get(i).hash(key);
-            if (hashMap[index] != null) {
-                if (hashMap[index].getValue() == key)
-                    return true;
-            }
+        int index = hashFunction.hash(key);
+        if (hashMap[index] != null) {
+            return hashMap[index].getValue() == key;
         }
         return false;
 
+    }
+
+    @Override
+    public int insert(ArrayList<Integer> keys) {
+        // TODO Auto-generated method stub
+        int collsion = 0;
+        boolean err = false;
+        for (int i = 0; i < keys.size(); i++) {
+            if (!insert(keys.get(i))) {
+                collsion++;
+                err = true;
+                break;
+            }
+        }
+        if (err) {
+            hashFunction = manager.getHashFunction(tableSize * tableSize);
+            hashMap = new Pair[tableSize * tableSize];
+            return collsion = collsion + insert(keys);
+        }
+        return collsion;
     }
 
 }

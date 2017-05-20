@@ -1,5 +1,7 @@
 package perfectHashing.interfaces;
 
+import java.util.ArrayList;
+
 import universalHashing.universalManager.HashManager;
 
 public abstract class IHasher {
@@ -14,7 +16,7 @@ public abstract class IHasher {
         manager = HashManager.getInstance();
     }
 
-    public abstract int insert(int key);
+    public abstract int insert(ArrayList<Integer> keys);
 
     public abstract boolean search(int key);
 

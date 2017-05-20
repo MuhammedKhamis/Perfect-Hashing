@@ -16,11 +16,10 @@ public class Main {
         ArrayList<Integer> keys = fileReader.Reader.readFile(filePath);
         IHasher oneLevel = new OneLevelHashing(keys.size());
         IHasher twoLevel = new TwoLevelHashing(keys.size());
+
         int collsion1 = 0, collsion2 = 0;
-        for (int i = 0; i < keys.size(); i++) {
-            collsion1 += oneLevel.insert(keys.get(i));
-            collsion2 += twoLevel.insert(keys.get(i));
-        }
+        collsion1 = oneLevel.insert(keys);
+        collsion2 = twoLevel.insert(keys);
         System.out.println(collsion1);
 
         System.out.println(collsion2);
