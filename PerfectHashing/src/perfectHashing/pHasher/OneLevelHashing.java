@@ -26,6 +26,7 @@ public class OneLevelHashing extends IHasher {
         }
         int index = hashFunction.hash(key);
         if (hashMap[index] == null) {
+            // System.out.println("Hashed to " + index);
             hashMap[index] = new Pair(key);
         } else {
             return false;

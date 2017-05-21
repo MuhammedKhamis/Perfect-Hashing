@@ -68,7 +68,12 @@ public class TwoLevelHashing extends IHasher {
         }
         for (int i = 0; i < tableSize; i++) {
             hashMap[i] = new OneLevelHashing(tmp.get(i).size());
-            collsions += hashMap[i].insert(tmp.get(i));
+            int val = hashMap[i].insert(tmp.get(i));
+            if(val > 6){
+                  //System.out.println("More than Expected");
+            }
+            collsions += val;  
+            
         }
         return collsions;
     }
