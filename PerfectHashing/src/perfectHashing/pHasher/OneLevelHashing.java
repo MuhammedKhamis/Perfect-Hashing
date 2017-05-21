@@ -60,7 +60,7 @@ public class OneLevelHashing extends IHasher {
         if (err) {
             hashFunction = manager.getHashFunction(tableSize * tableSize);
             hashMap = new Pair[tableSize * tableSize];
-            return collsion = collsion + insert(keys);
+            collsion = collsion + insert(keys);
         }
         return collsion;
     }

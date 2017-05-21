@@ -34,7 +34,6 @@ public class TwoLevelHashing extends IHasher {
     }
 
     private boolean chooseOfHash(ArrayList<Integer> keys) {
-        hashFunction = manager.getHashFunction(tableSize);
         tester = new int[tableSize];
         for (int i = 0; i < tableSize; i++) {
             int index = hashFunction.hash(keys.get(i));
@@ -44,17 +43,21 @@ public class TwoLevelHashing extends IHasher {
         for (int i = 0; i < tableSize; i++) {
             size += (tester[i] * tester[i]);
             if (size > tableSize * factor) {
-                return true;
+                // return true;
             }
         }
+        System.out.println("Total : " + size);
         return false;
     }
 
     @Override
     public int insert(ArrayList<Integer> keys) {
         // TODO Auto-generated method stub
-        while (chooseOfHash(keys))
-            ;
+        while (chooseOfHash(keys)) {
+            hashFunction = manager.getHashFunction(tableSize);
+        }
+
+        int collsions = 0;
         ArrayList<ArrayList<Integer>> tmp = new ArrayList<>();
         for (int i = 0; i < tableSize; i++) {
             tmp.add(new ArrayList<>());
@@ -64,10 +67,10 @@ public class TwoLevelHashing extends IHasher {
             tmp.get(index).add(keys.get(i));
         }
         for (int i = 0; i < tableSize; i++) {
-            hashMap[i] = new OneLevelHashing(tester[i]);
-            hashMap[i].insert(tmp.get(i));
+            hashMap[i] = new OneLevelHashing(tmp.get(i).size());
+            collsions += hashMap[i].insert(tmp.get(i));
         }
-        return 0;
+        return collsions;
     }
 
 }
